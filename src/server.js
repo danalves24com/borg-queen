@@ -89,8 +89,10 @@ server.on('connection', function(socket) {
   
   socket.on('close', function() {
     console.log("a node has disconnected")
+    console.log(nodes)
     sockets = sockets.filter(s => s !== socket);
     nodes = nodes.filter(s => s[0] !== socket);
+    console.log(nodes)
   });
 
 });
@@ -105,10 +107,11 @@ server.on('connection', function(socket) {
         var holdingNodeIDs = []
         nodes.forEach( node => {
             if(nodesSelected!=2) {
-                if(node[2] == "proc" && node[4]<2) {
+                if(node[2] == "proc" && node[4]<3) {
                     node[2] = "hold#"+req.body.data;
                     nodesSelected+=1;
                     node[0].send(node[2]);
+                    node[4]+=1;
                     holdingNodeIDs.push(node[1]);
                 }
             }
@@ -131,6 +134,8 @@ server.on('connection', function(socket) {
             nodes.forEach(node => {
                 if(node[1] == id) {
                     node[0].send("query#"+req.body.key);
+                    console.log("query", "id", node[1], "qID", id)
+                    console.log("query", "key", req.body.key)
                     res.send(`/${node[1]}/data`)
                 }
             })
