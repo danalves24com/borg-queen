@@ -33,7 +33,7 @@ function reUpload(data, originalNode) {
     }
     else {
         nodes.forEach(node => {
-            var nodeStatus = (node[2] == "proc" && node[4]<30 && node[1] != originalNode),
+            var nodeStatus = (node[2] == "proc" && node[4]<20 && node[1] != originalNode),
             selected = false
             if(!selected) {
                 if(nodeStatus) {                    
@@ -123,7 +123,7 @@ server.on('connection', function(socket) {
             capSum = 0,
             capMean = 0;
             for(var node in nodes) {
-                var capacity = 1-(nodes[node][4]/4)
+                var capacity = 1-(nodes[node][4]/35)
                 capacities.push(capacity)
                 capSum+=capacity
             }
