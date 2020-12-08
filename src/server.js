@@ -36,8 +36,7 @@ function reUpload(data, originalNode) {
             var nodeStatus = (node[2] == "proc" && node[4]<2 && node[1] != originalNode),
             selected = false
             if(!selected) {
-                if(nodeStatus) {
-                    // ! change existing transfers
+                if(nodeStatus) {                    
                     var logged = false;
                     for(var t in transferRoster) {                    
                         var transfer = transferRoster[t].split(">")
@@ -118,6 +117,31 @@ server.on('connection', function(socket) {
 
 
 
+    app.get("/more/:key", (req, res) => {
+        if(req.params.key == "adminKey") {
+            var capacities = [],
+            capSum = 0,
+            capMean = 0;
+            for(var node in nodes) {
+                var capacity = 1-(nodes[node][4]/4)
+                capacities.push(capacity)
+                capSum+=capacity
+            }
+            capMean = capSum / capacities.length
+            var data = {
+                "status": true,
+                "nodes_in_network": nodes.length,
+                "cache_data": dataToBeReintegrated.length,       
+                "storage_capacities": capacities,
+                "total_storage_capacity": capMean*100
+            }
+            res.json(data)
+        }
+        else {
+            res.json({"status": false, "body": "Failed Auth"})
+        }
+
+    })
 
     app.post("/data/clone-node", (req, res) => {
         var nodesSelected = 0;
@@ -139,7 +163,7 @@ server.on('connection', function(socket) {
         var holdingNodeIDs = []
         nodes.forEach( node => {
             if(nodesSelected!=2) {
-                if(node[2] == "proc" && node[4]<3) {
+                if(node[2] == "proc" && node[4]<4) {
                     node[2] = "hold#"+req.body.data;
                     node[4]+=1;
                     holdingNodeIDs.push(node[1]);
