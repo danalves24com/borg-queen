@@ -3,6 +3,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const path = require('path')
 const app = express();
+const { v4: uuidv4 } = require('uuid');
 const cors = require('cors');
 
 //app.use(express.static(path.join(__dirname, '/build'))) //to host a build website
@@ -77,7 +78,7 @@ var reintegrateData = (data, node) => {
 
 server.on('connection', function(socket) {
     console.log("new node connected")
-    var id = Math.random(),
+    var id = uuidv4(),
     socketDisc = [socket, id, "proc", "res", 0];
     sockets.push(socket);
     nodes.push(socketDisc)
