@@ -198,7 +198,7 @@ server.on('connection', function(socket) {
                     holdingNodeIDs.push(node[1]);
                     nodesSelected+=1;
                     node[0].send(node[2]);
-                    console.log("pushing data into node", node[2])
+                    console.log("pushing data into node", node[0])
                 }
             }
         })
@@ -264,7 +264,7 @@ server.on('connection', function(socket) {
         nodes.forEach(node => {
             if(node[1] == req.params.node) {            
                 var send = node[3] + ""
-                console.log(send.substring(0, 2)+"...")
+                //console.log(send.substring(0, 2)+"...")
                 node[3] = "res"
                 res.send(send)
             }
