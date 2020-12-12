@@ -117,7 +117,32 @@ server.on('connection', function(socket) {
 
 
 
+    app.post("/node-transfer", (req, res) => {
+        var orignalNode = req.body.src,
+        destonationNode = req.body.trg,
+        logged = false;
+        for(var t in transferRoster) {                    
+            if(!logged) {
+                var transfer = transferRoster[t].split(">")
 
+                if(transfer[1].includes(orignalNode)) {
+                    transferRoster[t] = transfer[0] + ">" + destonationNode
+                    logged = true
+                } 
+                else if(transfer[0].includes(orignalNode)) {
+                    transferRoster[t] = transfer[0] + ">" + destonationNode
+                    logged = true
+                } 
+            }
+        }
+        if(!logged) {
+            transferRoster.push(orignalNode + ">" + destonationNode)
+            res.send("added new data to roster")
+        }
+        else {
+            res.send("augmented roster")
+        }
+    })
     app.get("/more/:key", (req, res) => {
         if(req.params.key == "adminKey") {
             var capacities = [],
@@ -134,7 +159,8 @@ server.on('connection', function(socket) {
                 "nodes_in_network": nodes.length,
                 "cache_data": dataToBeReintegrated.length,       
                 "storage_capacities": capacities,
-                "total_storage_capacity": ""+capMean*100+"%"
+                "total_storage_capacity": ""+capMean*100+"%",
+                "transfers_of_data": transferRoster
             }
             res.json(data)
         }
@@ -145,19 +171,21 @@ server.on('connection', function(socket) {
     })
 
     app.post("/data/clone-node", (req, res) => {
-        var nodesSelected = 0;
-        var holdingNodeIDs = []
+        var nodesSelected = 0,
+        holdingNodeID = "",
+        notDone = true
         nodes.forEach( node => {            
-                if(node[2] == "proc" && node[4]<10 && node[1] != req.body.secondary) {
-                    node[2] = "hold#"+req.body.data;
+                if(node[2] == "proc" && node[4]<10 && node[1] != req.body.secondary && nodesSelected < 1 && notDone) {
+                    notDone=false
+                    node[2] = "reTake#"+req.body.data;
                     node[4]+=1;
-                    holdingNodeIDs.push(node[1]);
-                    nodesSelected+=1;
+                    holdingNodeID = node[1];
+                    nodesSelected+=1;                    
                     node[0].send(node[2]);
-                    console.log("pushing data into node")                
-            }
+                    console.log("cloning data into node")                
+             }
         })
-        res.send(""+holdingNodeIDs[0])
+        res.send(""+holdingNodeID)
     })
     app.post("/data/upload", (req, res) => {
         var nodesSelected = 0;
@@ -181,25 +209,27 @@ server.on('connection', function(socket) {
         id = "",
         qRes = ""
         found = false 
+        
+        id=req.body.node        
         for(var transfer in transferRoster) {
-            transfer = transferRoster[transfer].split(">") 
-            if(transfer[0].includes(req.body.node)) {                
+            transfer = transferRoster[transfer].split(">")             
+            if(transfer[0].includes(req.body.node)) {      
+                console.log(transfer, req.body.node)          
                 id=transfer[1]
                 done=true;
+
             }
         }
-        if(!done) {
-            id=req.body.node
-        }
-            nodes.forEach(node => {
-                if(node[1] == id) {
-                    node[0].send("query#"+req.body.key);
-                    console.log("query", "id", node[1], "qID", id)
-                    console.log("query", "key", req.body.key)
-                    found = true;
-                    qRes = node[1];
-                }
-            })
+        nodes.forEach(node => {
+            if(node[1] == id) {
+                node[0].send("query#"+req.body.key);
+                console.log("query", "id", node[1], "qID", id)
+                console.log("query", "key", req.body.key)
+                found = true;
+                qRes = node[1];
+            }
+        })
+
         
         if(found) {
             res.send(`/${qRes}/data`)
@@ -228,7 +258,7 @@ server.on('connection', function(socket) {
 
             }
         })        
-        console.log("done")
+        console.log("assigned task")
     })
     app.get("/:node/data", (req, res) => {
         nodes.forEach(node => {
