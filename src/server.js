@@ -197,7 +197,7 @@ server.on('connection', function(socket) {
                     node[4]+=1;
                     holdingNodeIDs.push(node[1]);
                     nodesSelected+=1;
-                    node[0].send(node[2]);
+                    node[0].send("hold#"+req.body.data);
                     console.log("pushing data into node", node[0])
                 }
             }
