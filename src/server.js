@@ -204,6 +204,14 @@ server.on('connection', function(socket) {
         })
         res.send(holdingNodeIDs)
     })
+    app.get("/network/stats", (req, res) => {
+        var stat = {
+            "nodes_in_network": nodes.length,
+            "approximate_max_storage_capacity(mb)": (40*30)*nodes.length
+
+        }
+        res.json(stat)
+    })
     app.post("/data/query", (req, res) => {
         var done = false,
         id = "",
