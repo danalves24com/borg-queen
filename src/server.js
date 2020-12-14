@@ -28,7 +28,7 @@ let sockets = [],
     nodes = [];
 
 function reUpload(data, originalNode) {
-    if(nodes.length < 2) {
+    if(nodes.length < 3) {
         console.log("no nodes in system, putting data into cache")
         dataToBeReintegrated.push(data)
     }
@@ -107,14 +107,17 @@ server.on('connection', function(socket) {
   
   socket.on('close', function() {
     console.log("a node has disconnected")
-    console.log(nodes)
+    console.log(socket)
     sockets = sockets.filter(s => s !== socket);
     nodes = nodes.filter(s => s[0] !== socket);
-    console.log(nodes)
+    //console.log(nodes)
   });
 
 });
 
+    app.get("/lastV", (req, res) => {
+        res.send("last_version:9")
+    })
 
 
     app.post("/node-transfer", (req, res) => {
@@ -243,7 +246,19 @@ server.on('connection', function(socket) {
             res.send(`/${qRes}/data`)
         }
         else {
-            res.send("notFound").status(404)
+            var cachedData = ""
+            dataToBeReintegrated.forEach(data => {
+                if(data.includes(req.body.key)) {
+                    cachedData = data;
+                }
+                else {}
+            })
+            if(cachedData=="") {
+                res.send("notFound").status(404)
+            }
+            else {
+                res.send("cache!"+cachedData)
+            }
         }
     })
 
