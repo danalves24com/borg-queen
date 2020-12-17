@@ -77,7 +77,7 @@ var reintegrateData = (data, node) => {
 }
 
 server.on('connection', function(socket) {
-    console.log("new node connected")
+    console.log("CON> new node connected, totaling " + nodes.length + " nodes")
     var id = uuidv4(),
     socketDisc = [socket, id, "proc", "res", 0];
     sockets.push(socket);
@@ -106,8 +106,7 @@ server.on('connection', function(socket) {
 
   
   socket.on('close', function() {
-    console.log("a node has disconnected")
-    console.log(socket)
+    console.log("CON> a node has disconnected, "+ nodes.length + " are remaining")   
     sockets = sockets.filter(s => s !== socket);
     nodes = nodes.filter(s => s[0] !== socket);
     //console.log(nodes)
@@ -118,6 +117,27 @@ server.on('connection', function(socket) {
     app.get("/lastV", (req, res) => {
         res.send("last_version:9")
     })
+
+app.get("/lastV/mobile", (req, res) => {
+	res.send("last_version:2")
+})
+
+var statusTree = {
+	"nodes": function(req, res) 
+	{
+		res.send(""+nodes.length).status(200)
+	},
+	"capacity": function(req, res) 
+	
+	{
+		res.send("not avalible")
+	}
+}
+
+
+	app.get("/int/:path", (req, res) => {
+		statusTree[req.params.path](req, res); //kinda looks like a bullet; gotta love them semilocons after coding in CPP
+	})
 
 
     app.post("/node-transfer", (req, res) => {
