@@ -140,6 +140,23 @@ var statusTree = {
 	})
 
 
+
+	app.get("/network/probe", (req, res) => {
+		var deadFoundNodes = []
+		nodes.forEach(x => {
+			if(x[2] == "proce") {
+				x[0].send("respondToMe")
+				var response = "res"
+				while(response == "res") {
+					response = x[3]
+				 		
+				}
+
+			}
+		})
+	})
+
+
     app.post("/node-transfer", (req, res) => {
         var orignalNode = req.body.src,
         destonationNode = req.body.trg,
