@@ -77,7 +77,7 @@ var reintegrateData = (data, node) => {
 }
 
 server.on('connection', function(socket) {
-    console.log("CON> new node connected, totaling " + nodes.length + " nodes")
+    console.log("CON> new node connected, totaling " + (nodes.length+1) + " nodes")
     var id = uuidv4(),
     socketDisc = [socket, id, "proc", "res", 0];
     sockets.push(socket);
@@ -106,7 +106,7 @@ server.on('connection', function(socket) {
 
   
   socket.on('close', function() {
-    console.log("CON> a node has disconnected, "+ nodes.length + " are remaining")   
+    console.log("CON> a node has disconnected, "+ (nodes.length-1) + " are remaining")   
     sockets = sockets.filter(s => s !== socket);
     nodes = nodes.filter(s => s[0] !== socket);
     //console.log(nodes)
@@ -146,14 +146,33 @@ var statusTree = {
 		nodes.forEach(x => {
 			if(x[2] == "proce") {
 				x[0].send("respondToMe")
-				var response = "res"
+				var response = "res",
+					queryCount = 0;
 				while(response == "res") {
-					response = x[3]
-				 		
+					queryCount += 1;
+					if(queryCount >= 20) {
+						response = "dead"
+					}
+					else {
+						response = x[3]				 		
+					}
 				}
+				if(response == "dead") {
+					deadFoundNodes+=1;					
+					sockets = sockets.filter(s => s !== node[0]);
+					nodes = nodes.filter(s => s !== node);
+			
+				}
+				else {
 
+				}
 			}
+
+
+				 		
+				 		
 		})
+		res.send(`purged ${deadFoundNodes} nodes, ${nodes.length} remain`)
 	})
 
 
