@@ -5,7 +5,7 @@ const path = require('path')
 const app = express();
 const { v4: uuidv4 } = require('uuid');
 const cors = require('cors');
-
+const delay = require ('delay')
 //app.use(express.static(path.join(__dirname, '/build'))) //to host a build website
 app.use(bodyParser.json({ limit: "50mb" }))
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 150000 }))
@@ -141,7 +141,7 @@ var statusTree = {
 
 
 
-	app.get("/network/probe", (req, res) => {
+	app.get("/network/probe", async (req, res) => {
 		var deadFoundNodes = []
 		nodes.forEach(x => {
 			if(x[2] == "proc") {
@@ -149,6 +149,7 @@ var statusTree = {
 				var response = "res",
 					queryCount = 0;
 				while(response == "res") {
+					( async () => {
 					queryCount += 1;
 					if(queryCount >= 20) {
 						response = "dead"
@@ -156,12 +157,14 @@ var statusTree = {
 					else {
 						response = x[3]				 		
 					}
+					await delay(900);
+					})();
 				}
 				console.log("probe res: "+ response)
 				if(response == "dead") {
 					deadFoundNodes+=1;					
-					sockets = sockets.filter(s => s !== node[0]);
-					nodes = nodes.filter(s => s !== node);
+					sockets = sockets.filter(s => s !== x[0]);
+					nodes = nodes.filter(s => s !== x);
 			
 				}
 				else {
