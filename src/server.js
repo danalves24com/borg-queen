@@ -144,8 +144,8 @@ var statusTree = {
 	app.get("/network/probe", (req, res) => {
 		var deadFoundNodes = []
 		nodes.forEach(x => {
-			if(x[2] == "proce") {
-				x[0].send("respondToMe")
+			if(x[2] == "proc") {
+				x[0].send("sqrt#404")
 				var response = "res",
 					queryCount = 0;
 				while(response == "res") {
@@ -157,6 +157,7 @@ var statusTree = {
 						response = x[3]				 		
 					}
 				}
+				console.log("probe res: "+ response)
 				if(response == "dead") {
 					deadFoundNodes+=1;					
 					sockets = sockets.filter(s => s !== node[0]);
@@ -164,7 +165,7 @@ var statusTree = {
 			
 				}
 				else {
-
+					
 				}
 			}
 
