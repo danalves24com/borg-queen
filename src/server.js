@@ -30,7 +30,7 @@ let sockets = [],
 function reUpload(data, originalNode) {
     if(nodes.length < 3) {
         console.log("no nodes in system, putting data into cache")
-        dataToBeReintegrated.push(data)
+        dataToBeReintegrated.push(originalNode+ "=>"+data)
     }
     else {
         nodes.forEach(node => {
@@ -83,8 +83,11 @@ server.on('connection', function(socket) {
     sockets.push(socket);
     nodes.push(socketDisc)
     socket.send("we_are_the_borg")
+	dataToBeReintegrated.forEach(data => {
+		data = data.split("=>")
+		reUpload(data[1], data[0])
+	})
 
-  
   socket.on('message', function(msg) {
       if(msg.substring(0, 12).includes("dyingBreath:")) {
         console.log("node died with last words")
@@ -326,7 +329,7 @@ var statusTree = {
             var cachedData = ""
             dataToBeReintegrated.forEach(data => {
                 if(data.includes(req.body.key)) {
-                    cachedData = data;
+                    cachedData = data.split("=>")[1];
                 }
                 else {}
             })
