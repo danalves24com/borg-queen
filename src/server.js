@@ -160,6 +160,10 @@ var statusTree = {
 		if(mode == "act") {
 		var removedNodes = 0;
 		nodes.forEach(node => {
+
+			let buff = new Buffer(node[3], 'base64');
+			let text = buff.toString('ascii');
+			node[3] = text
 			if(node[3].includes("20.")) {
 				
 			}
@@ -177,6 +181,9 @@ var statusTree = {
 			var removedNodes = 0
 			nodes.forEach(node => {				
 				console.log(node[3])
+				let buff = new Buffer(node[3], 'base64');
+				let text = buff.toString('ascii');
+				node[3] = text
 				if(node[3].includes(".")) { 
 					
 				}
@@ -196,7 +203,7 @@ var statusTree = {
         logged = false;
         for(var t in transferRoster) {                    
             if(!logged) {
-                var transfer = transferRoster[t].split(">")
+               var transfer = transferRoster[t].split(">")
 
                 if(transfer[1].includes(orignalNode)) {
                     transferRoster[t] = transfer[0] + ">" + destonationNode
