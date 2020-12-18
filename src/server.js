@@ -142,7 +142,7 @@ var statusTree = {
 
 
 	app.get("/network/probe", async (req, res) => {
-		var deadFoundNodes = []
+		var deadFoundNodes = 0
 		nodes.forEach(x => {
 			if(x[2] == "proc") {
 				x[0].send("sqrt#404")
@@ -151,7 +151,7 @@ var statusTree = {
 				while(response == "res") {
 					( async () => {
 					queryCount += 1;
-					if(queryCount >= 20) {
+					if(queryCount >= 200) {
 						response = "dead"
 					}
 					else {
