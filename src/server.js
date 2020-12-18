@@ -86,6 +86,8 @@ server.on('connection', function(socket) {
 	dataToBeReintegrated.forEach(data => {
 		data = data.split("=>")
 		reUpload(data[1], data[0])
+		dataToBeReintegrated = dataToBeReintegrated.filter(d => d !== data.join("=>"))
+		console.log("reintegrated data into network")
 	})
 
   socket.on('message', function(msg) {
