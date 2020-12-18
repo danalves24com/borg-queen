@@ -176,7 +176,8 @@ var statusTree = {
 		else {
 			var removedNodes = 0
 			nodes.forEach(node => {				
-				if(node[3].includes("20.")) { 
+				console.log(node[3])
+				if(node[3].includes(".")) { 
 					
 				}
 				else {					
