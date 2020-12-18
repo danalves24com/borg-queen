@@ -141,42 +141,51 @@ var statusTree = {
 
 
 
-	app.get("/network/probe", async (req, res) => {
+	app.get("/send/probe", async (req, res) => {
 		var deadFoundNodes = 0
 		nodes.forEach(x => {
 			if(x[2] == "proc") {
 				x[0].send("sqrt#404")
-				var response = "res",
-					queryCount = 0;
-				while(response == "res") {
-					( async () => {
-					queryCount += 1;
-					if(queryCount >= 200) {
-						response = "dead"
-					}
-					else {
-						response = x[3]				 		
-					}
-					await delay(900);
-					})();
-				}
-				console.log("probe res: "+ response)
-				if(response == "dead") {
-					deadFoundNodes+=1;					
-					sockets = sockets.filter(s => s !== x[0]);
-					nodes = nodes.filter(s => s !== x);
-			
-				}
-				else {
-					
-				}
-			}
+			}else {}
 
 
 				 		
 				 		
 		})
-		res.send(`purged ${deadFoundNodes} nodes, ${nodes.length} remain`)
+		res.send(`sent a probe reques to all avalible nodes`)
+	})
+
+	app.get("/query/probe/:mode", (req, res) => {
+		var mode = req.params.mode
+		if(mode == "act") {
+		var removedNodes = 0;
+		nodes.forEach(node => {
+			if(node[3].includes("20.")) {
+				
+			}
+			else {			
+				sockets = sockets.filter(s => s !== node[0]);
+				nodes = nodes.filter(s => s !== node);
+				removedNodes+=1
+			}
+			res.send("rem: " + removedNodes)
+			
+			
+		})
+		}
+		else {
+			var removedNodes = 0
+			nodes.forEach(node => {				
+				if(node[3].includes("20.")) { 
+					
+				}
+				else {					
+					removedNodes+=1;					
+				}
+
+			})
+			res.send("nonRes: "+ removedNodes)
+		}
 	})
 
 
