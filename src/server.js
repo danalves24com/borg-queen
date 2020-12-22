@@ -28,7 +28,7 @@ let sockets = [],
     nodes = [];
 
 function reUpload(data, originalNode) {
-    if(nodes.length < 3) {
+    if(nodes.length < 2) {
         console.log("no nodes in system, putting data into cache")
         dataToBeReintegrated.push(originalNode+ "=>"+data)
     }
@@ -120,7 +120,7 @@ server.on('connection', function(socket) {
 });
 
     app.get("/lastV", (req, res) => {
-        res.send("last_version:9")
+        res.send("last_version:10")
     })
 
 app.get("/lastV/mobile", (req, res) => {
@@ -277,13 +277,13 @@ var statusTree = {
         var holdingNodeIDs = []
         nodes.forEach( node => {
             if(nodesSelected!=2) {
-                if(node[2] == "proc" && node[4]<30) {
+                if(node[2] == "proc" && node[4]<30) {			
+		node[0].send("hold#"+req.body.data);
                     node[2] = "hold#"+req.body.data;
                     node[4]+=1;
                     holdingNodeIDs.push(node[1]);
-                    nodesSelected+=1;
-                    node[0].send("hold#"+req.body.data);
-                    console.log("pushing data into node", node[0])
+                      nodesSelected+=1;
+		console.log("pushing data into node", node[0])
                 }
             }
         })
