@@ -120,7 +120,7 @@ server.on('connection', function(socket) {
 });
 
     app.get("/lastV", (req, res) => {
-        res.send("last_version:10")
+        res.send("last_version:11")
     })
 
 app.get("/lastV/mobile", (req, res) => {
@@ -275,8 +275,16 @@ var statusTree = {
     app.post("/data/upload", (req, res) => {
         var nodesSelected = 0;
         var holdingNodeIDs = []
+	var count = 2;
+	   if(nodes.length > 1) {
+
+	}
+	    else {
+		console.log("storage is on thin ICE")
+		count = 1
+	    }
         nodes.forEach( node => {
-            if(nodesSelected!=2) {
+            if(nodesSelected!=count) {
                 if(node[2] == "proc" && node[4]<30) {			
 		node[0].send("hold#"+req.body.data);
                     node[2] = "hold#"+req.body.data;
