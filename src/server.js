@@ -28,7 +28,7 @@ let sockets = [],
     nodes = [];
 
 function reUpload(data, originalNode) {
-    if(nodes.length < 1 && nodes[0][1] == originalNode) {
+    if(nodes.length < 2) {
         console.log("no nodes in system, putting data into cache")
         dataToBeReintegrated.push(originalNode+ "=>"+data)
     }
@@ -84,12 +84,15 @@ server.on('connection', function(socket) {
     sockets.push(socket);
     nodes.push(socketDisc)
     socket.send("we_are_the_borg")
+	if(nodes.length > 2) {
 	dataToBeReintegrated.forEach(data => {
 		data = data.split("=>")
 		reUpload(data[1], data[0])
 		dataToBeReintegrated = dataToBeReintegrated.filter(d => d !== data.join("=>"))
 		console.log("reintegrated data into network")
 	})
+	}
+	else {console.log("cannot reintegrate data, network to small")}
 
   socket.on('message', function(msg) {
       if(msg.substring(0, 12).includes("dyingBreath:")) {
