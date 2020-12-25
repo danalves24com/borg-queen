@@ -28,7 +28,7 @@ let sockets = [],
     nodes = [];
 
 function reUpload(data, originalNode) {
-    if(nodes.length < 2) {
+    if(nodes.length < 1) {
         console.log("no nodes in system, putting data into cache")
         dataToBeReintegrated.push(originalNode+ "=>"+data)
     }
@@ -57,6 +57,7 @@ function reUpload(data, originalNode) {
                         
                     }
                     console.log(transferRoster)
+			console.log("that was the tranfser roster")
                     node[2] = "reTake#"+data
                     node[0].send(node[2])
                 }
@@ -73,7 +74,7 @@ var reintegrateData = (data, node) => {
         reUpload(dat, node[1])
 
     }
-    console.log(data)
+    console.log(data.substring(0, 5) + "...")
 }
 
 server.on('connection', function(socket) {
@@ -118,6 +119,11 @@ server.on('connection', function(socket) {
   });
 
 });
+
+	app.get("/transfer", (req, res) => {
+		res.send(""+transferRoster)
+	})
+
 
     app.get("/lastV", (req, res) => {
         res.send("last_version:11")
