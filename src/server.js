@@ -28,7 +28,7 @@ let sockets = [],
     nodes = [];
 
 function reUpload(data, originalNode) {
-    if(nodes.length < 1) {
+    if(nodes.length < 1 && nodes[0][1] == originalNode) {
         console.log("no nodes in system, putting data into cache")
         dataToBeReintegrated.push(originalNode+ "=>"+data)
     }
