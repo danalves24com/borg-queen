@@ -74,7 +74,7 @@ var reintegrateData = (data, node) => {
         reUpload(dat, node[1])
 
     }
-    console.log(data.substring(0, 5) + "...")
+    console.log("reintegrated " + data.length + " data peice/s")
 }
 
 server.on('connection', function(socket) {
@@ -297,7 +297,7 @@ var statusTree = {
                     node[4]+=1;
                     holdingNodeIDs.push(node[1]);
                       nodesSelected+=1;
-		console.log("pushing data into node", node[0])
+		console.log("pushing data into node", node[1])
                 }
             }
         })
