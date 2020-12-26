@@ -42,7 +42,7 @@ function reUpload(data, originalNode) {
                     for(var t in transferRoster) {                    
                         var transfer = transferRoster[t].split(">")
 
-                        if(transfer[1].includes(originalNode)) {
+                        if(transfer[0].includes(originalNode)) {
                             transferRoster[t] = transfer[0] + ">" + node[1]
                             logged = true
                         }
@@ -60,6 +60,7 @@ function reUpload(data, originalNode) {
 			console.log("that was the tranfser roster")
                     node[2] = "reTake#"+data
                     node[0].send(node[2])
+			selected = true; // gotta break that statement you dumbass
                 }
             }
         })
@@ -84,7 +85,7 @@ server.on('connection', function(socket) {
     sockets.push(socket);
     nodes.push(socketDisc)
     socket.send("we_are_the_borg")
-	if(nodes.length > 2) {
+	if(nodes.length >= 2) {
 	dataToBeReintegrated.forEach(data => {
 		data = data.split("=>")
 		reUpload(data[1], data[0])
