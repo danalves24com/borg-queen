@@ -61,6 +61,8 @@ function reUpload(data, originalNode) {
                     node[2] = "reTake#"+data
                     node[0].send(node[2])
 			node[4]+=1;
+
+			console.log(node[1]+" is retaking data")
 			selected = true; // gotta break that statement you dumbass
                 }
             }
