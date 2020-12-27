@@ -42,7 +42,7 @@ function reUpload(data, originalNode) {
                     for(var t in transferRoster) {                    
                         var transfer = transferRoster[t].split(">")
 
-                        if(transfer[0].includes(originalNode)) {
+                        if(transfer[1].includes(originalNode)) {
                             transferRoster[t] = transfer[0] + ">" + node[1]
                             logged = true
                         }
@@ -60,6 +60,7 @@ function reUpload(data, originalNode) {
 			console.log("that was the tranfser roster")
                     node[2] = "reTake#"+data
                     node[0].send(node[2])
+			node[4]+=1;
 			selected = true; // gotta break that statement you dumbass
                 }
             }
