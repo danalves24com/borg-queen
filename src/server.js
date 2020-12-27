@@ -44,6 +44,7 @@ function reUpload(data, originalNode) {
 
                         if(transfer[1].includes(originalNode)) {
                             transferRoster[t] = transfer[0] + ">" + node[1]
+				transferRoster.push(originalNode+">"+node[1])
                             logged = true
                         }
                         else {
