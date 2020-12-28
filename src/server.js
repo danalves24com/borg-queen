@@ -44,7 +44,12 @@ function reUpload(data, originalNode) {
 
                         if(transfer[1].includes(originalNode)) {
                             transferRoster[t] = transfer[0] + ">" + node[1]
-				transferRoster.push(originalNode+">"+node[1])
+						
+				var newPush = originalNode+">"+node[1]
+				if(!transferRoster.includes(newPush)) {			
+					transferRoster.push(newPush)
+				}	
+
                             logged = true
                         }
                         else {
@@ -184,14 +189,14 @@ var statusTree = {
 			let text = buff.toString('ascii');
 			node[3] = text
 			if(node[3].includes("20.")) {
-				
+				node[3] = "res"			
 			}
 			else {			
 				sockets = sockets.filter(s => s !== node[0]);
 				nodes = nodes.filter(s => s !== node);
 				removedNodes+=1
 			}
-			res.send("rem: " + removedNodes)
+			res.send("removed: " + removedNodes)
 			
 			
 		})
@@ -211,7 +216,7 @@ var statusTree = {
 				}
 
 			})
-			res.send("nonRes: "+ removedNodes)
+			res.send("nonResponsiveNodes: "+ removedNodes)
 		}
 	})
 
