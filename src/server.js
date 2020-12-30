@@ -30,7 +30,12 @@ let sockets = [],
 function reUpload(data, originalNode) {
     if(nodes.length < 2) {
         console.log("no nodes in system, putting data into cache")
-        dataToBeReintegrated.push(originalNode+ "=>"+data)
+        var reintAddress = originalNode+ "=>"+data
+	if(dataToBeReintegrated.includes(reintAddress)) {
+	}
+	else {
+		dataToBeReintegrated.push(reintAddress)
+	}
     }
     else {
         nodes.forEach(node => {
