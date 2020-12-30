@@ -43,15 +43,27 @@ function reUpload(data, originalNode) {
             selected = false
             if(!selected) {
                 if(nodeStatus) {                    
-                    var transferSpecs = originalNode+">"+node[1]
-                    		
+                    var transferSpecs = originalNode+">"+node[1], transferIndex = 0;                
+			transferRoster.forEach(t => {			
+				var tr = t.split(">")
+				if(tr[0] == originalNode) {
+					transferRoster[transferIndex] = tr[0] + ">" + node[1]
+					transferRoster.push(tr[1] + ">" + node[1])
+				}
+				else {
+
+				}
+				transferIndex+=1;
+			})
 			if(!transferRoster.includes(transferSpecs)){
-                        transferRoster.push(transferSpecs)
+
+				transferRoster.push(transferSpecs)
+
                     }
                     else {
                         
                     }
-                    console.log(transferRoster)
+//                    console.log(transferRoster)
 			console.log("that was the tranfser roster")
                     node[2] = "reTake#"+data
                     node[0].send(node[2])
