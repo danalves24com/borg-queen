@@ -40,7 +40,7 @@ function reUpload(data, originalNode) {
                 if(nodeStatus) {                    
                     var transferSpecs = originalNode+">"+node[1]
                     		
-			if(!transferRoster.includes(transferSpecs){
+			if(!transferRoster.includes(transferSpecs)){
                         transferRoster.push(transferSpecs)
                     }
                     else {
