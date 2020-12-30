@@ -38,26 +38,10 @@ function reUpload(data, originalNode) {
             selected = false
             if(!selected) {
                 if(nodeStatus) {                    
-                    var logged = false;
-                    for(var t in transferRoster) {                    
-                        var transfer = transferRoster[t].split(">")
-
-                        if(transfer[1].includes(originalNode)) {
-                            transferRoster[t] = transfer[0] + ">" + node[1]
-						
-				var newPush = originalNode+">"+node[1]
-				if(!transferRoster.includes(newPush)) {			
-					transferRoster.push(newPush)
-				}	
-
-                            logged = true
-                        }
-                        else {
-
-                        }
-                    }
-                    if(!logged) {
-                        transferRoster.push(`${originalNode}>`+node[1])
+                    var transferSpecs = originalNode+">"+node[1]
+                    		
+			if(!transferRoster.includes(transferSpecs){
+                        transferRoster.push(transferSpecs)
                     }
                     else {
                         
@@ -189,14 +173,14 @@ var statusTree = {
 			let text = buff.toString('ascii');
 			node[3] = text
 			if(node[3].includes("20.")) {
-				node[3] = "res"			
+				
 			}
 			else {			
 				sockets = sockets.filter(s => s !== node[0]);
 				nodes = nodes.filter(s => s !== node);
 				removedNodes+=1
 			}
-			res.send("removed: " + removedNodes)
+			res.send("rem: " + removedNodes)
 			
 			
 		})
@@ -216,7 +200,7 @@ var statusTree = {
 				}
 
 			})
-			res.send("nonResponsiveNodes: "+ removedNodes)
+			res.send("nonRes: "+ removedNodes)
 		}
 	})
 
