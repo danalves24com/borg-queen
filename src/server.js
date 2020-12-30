@@ -325,6 +325,24 @@ var statusTree = {
         }
         res.json(stat)
     })
+    
+
+	function returnLastNode(originalNode) {
+		var nextNodeInLine = "", found = false;
+		transferRoster.forEach(t => {
+			t = t.split(">")
+			if(t[0] == originalNode) {
+				nextNodeInLine = t[1]
+				found = true
+			}
+		})
+		if(found) {
+			return returnLastNode(nextNodeInLine)
+		}
+		else {
+			return originalNode
+		}
+	}
     app.post("/data/query", (req, res) => {
         var done = false,
         id = "",
@@ -336,7 +354,7 @@ var statusTree = {
             transfer = transferRoster[transfer].split(">")             
             if(transfer[0].includes(req.body.node)) {      
                 console.log(transfer, req.body.node)          
-                id=transfer[1]
+                id=returnLastNode(transfer[0])
                 done=true;
 
             }
