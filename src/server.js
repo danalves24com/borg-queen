@@ -28,7 +28,8 @@ let sockets = [],
     nodes = [];
 
 function reUpload(data, originalNode) {
-    if(nodes.length < 2) {
+    
+if(nodes.length < 2) {
         console.log("no nodes in system, putting data into cache")
         var reintAddress = originalNode+ "=>"+data
 	if(dataToBeReintegrated.includes(reintAddress)) {
@@ -82,7 +83,7 @@ var reintegrateData = (data, node) => {
     data = data.split(", ")
     for(var dat in data) {
         dat=data[dat];
-        reUpload(dat, node[1])
+        reUpload(dat, node)
 
     }
     console.log("reintegrated " + data.length + " data peice/s")
@@ -103,13 +104,15 @@ server.on('connection', function(socket) {
 		console.log("reintegrated data into network")
 	})
 	}
-	else {console.log("cannot reintegrate data, network to small")}
+	else {console.log("cannot reintegrate any data, network to small")}
 
   socket.on('message', function(msg) {
       if(msg.substring(0, 12).includes("dyingBreath:")) {
         console.log("node died with last words")
-        reintegrateData(msg, socketDisc)
-        //console.log(msg)
+        reintegrateData(msg, socketDisc[1]+"")     
+	sockets = sockets.filter(s => s !== socket);
+	nodes = nodes.filter(s => s[0] !== socket); // NOTE  why did I put this 0 there? 
+	      //console.log(msg)
       }
       else {
         //outputs.push(msg)
@@ -127,8 +130,14 @@ server.on('connection', function(socket) {
   
   socket.on('close', function() {
     console.log("CON> a node has disconnected, "+ (nodes.length-1) + " are remaining")   
-    sockets = sockets.filter(s => s !== socket);
-    nodes = nodes.filter(s => s[0] !== socket);
+	try {
+	    sockets = sockets.filter(s => s !== socket);
+	    nodes = nodes.filter(s => s[0] !== socket); // NOTE  why did I put this 0 there? 
+	}
+	catch(e) {
+	 // node already removed
+	}
+
     //console.log(nodes)
   });
 
