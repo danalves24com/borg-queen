@@ -41,8 +41,8 @@ if(nodes.length < 2) {
     }
     else {
         nodes.forEach(node => {
-		var overLap = !node[5].includes(md5(data));
-		console.log(node[5], md5(data), overLap)
+		var overLap = !node[5].includes(md5(data.split("<>")[1]));
+		console.log(node[5], md5(data.split("<>")[1]), overLap)
             var nodeStatus = (node[2] == "proc" && node[4]<20 && node[1] != originalNode && overLap),
             selected = false
             if(!selected) {
