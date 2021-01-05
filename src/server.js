@@ -6,6 +6,7 @@ const app = express();
 const { v4: uuidv4 } = require('uuid');
 const cors = require('cors');
 const delay = require ('delay')
+const md5 = require('md5');
 //app.use(express.static(path.join(__dirname, '/build'))) //to host a build website
 app.use(bodyParser.json({ limit: "50mb" }))
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 150000 }))
@@ -28,7 +29,7 @@ let sockets = [],
     nodes = [];
 
 function reUpload(data, originalNode) {
-    
+    var transferNodeFound = false;
 if(nodes.length < 2) {
         console.log("no nodes in system, putting data into cache")
         var reintAddress = originalNode+ "=>"+data
@@ -40,7 +41,9 @@ if(nodes.length < 2) {
     }
     else {
         nodes.forEach(node => {
-            var nodeStatus = (node[2] == "proc" && node[4]<20 && node[1] != originalNode),
+		var overLap = !node[5].includes(md5(data));
+		
+            var nodeStatus = (node[2] == "proc" && node[4]<20 && node[1] != originalNode && overLap),
             selected = false
             if(!selected) {
                 if(nodeStatus) {                    
@@ -60,22 +63,33 @@ if(nodes.length < 2) {
 
 				transferRoster.push(transferSpecs)
 
-                    }
-                    else {
-                        
-                    }
+                	}
+	                    else {
+        	                
+                	    }
 //                    console.log(transferRoster)
 			console.log("that was the tranfser roster")
                     node[2] = "reTake#"+data
                     node[0].send(node[2])
+		    node[5].push(md5(data));
 			node[4]+=1;
-
+			transferNodeFound = true;
 			console.log(node[1]+" is retaking data")
 			selected = true; // gotta break that statement you dumbass
                 }
             }
         })
     }
+	if(!transferNodeFound) {
+	
+        console.log("no fitting node found, putting data into cache")
+        var reintAddress = originalNode+ "=>"+data
+	if(dataToBeReintegrated.includes(reintAddress)) {
+	}
+	else {
+		dataToBeReintegrated.push(reintAddress)
+	}
+	}
 }
 
 var reintegrateData = (data, node) => {
@@ -92,7 +106,7 @@ var reintegrateData = (data, node) => {
 server.on('connection', function(socket) {
     console.log("CON> new node connected, totaling " + (nodes.length+1) + " nodes")
     var id = uuidv4(),
-    socketDisc = [socket, id, "proc", "res", 0];
+    socketDisc = [socket, id, "proc", "res", 0, []];
     sockets.push(socket);
     nodes.push(socketDisc)
     socket.send("we_are_the_borg")
@@ -317,6 +331,7 @@ var statusTree = {
                 if(node[2] == "proc" && node[4]<30) {			
 		node[0].send("hold#"+req.body.data);
                     node[2] = "hold#"+req.body.data;
+		    node[5].push(md5(req.body.data))
                     node[4]+=1;
                     holdingNodeIDs.push(node[1]);
                       nodesSelected+=1;
