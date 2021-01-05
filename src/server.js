@@ -42,7 +42,7 @@ if(nodes.length < 2) {
     else {
         nodes.forEach(node => {
 		var overLap = !node[5].includes(md5(data));
-		
+		console.log(node[5], md5(data), overLap)
             var nodeStatus = (node[2] == "proc" && node[4]<20 && node[1] != originalNode && overLap),
             selected = false
             if(!selected) {
@@ -303,10 +303,11 @@ var statusTree = {
         holdingNodeID = "",
         notDone = true
         nodes.forEach( node => {            
-                if(node[2] == "proc" && node[4]<10 && node[1] != req.body.secondary && nodesSelected < 1 && notDone) {
+                if(node[2] == "proc" && node[4]<10 && node[1] != req.body.secondary && nodesSelected < 1 && notDone && !node[5].includes(md5(req.body.data))) {
                     notDone=false
                     node[2] = "reTake#"+req.body.data;
                     node[4]+=1;
+			node[5].push(md5(req.body.data))
                     holdingNodeID = node[1];
                     nodesSelected+=1;                    
                     node[0].send(node[2]);
@@ -335,7 +336,7 @@ var statusTree = {
                     node[4]+=1;
                     holdingNodeIDs.push(node[1]);
                       nodesSelected+=1;
-		console.log("pushing data into node", node[1])
+		console.log("pushing data into node", node[1], "| hash", md5(req.body.data))
                 }
             }
         })
